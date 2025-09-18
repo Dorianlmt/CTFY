@@ -1,0 +1,43 @@
+[build]
+  command = "npm run build && npm run export"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Redirects pour les API routes
+[[redirects]]
+  from = "/api/auth/*"
+  to = "https://your-supabase-project.supabase.co/functions/v1/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/challenges/*"
+  to = "https://your-supabase-project.supabase.co/functions/v1/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/teams/*"
+  to = "https://your-supabase-project.supabase.co/functions/v1/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/submissions/*"
+  to = "https://your-supabase-project.supabase.co/functions/v1/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/upload"
+  to = "https://your-supabase-project.supabase.co/functions/v1/upload"
+  status = 200
+  force = true
+
+# Fallback pour SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

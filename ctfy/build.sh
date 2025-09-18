@@ -4,6 +4,9 @@
 echo "Installing dependencies..."
 npm install
 
+echo "Installing additional dependencies..."
+npm install autoprefixer
+
 echo "Generating Prisma client..."
 npx prisma generate
 
