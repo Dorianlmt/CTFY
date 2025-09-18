@@ -74,7 +74,10 @@ export default function ProfilePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(teamFormData),
+        body: JSON.stringify({
+          ...teamFormData,
+          userId: user.id,
+        }),
       });
 
       if (response.ok) {
@@ -82,8 +85,10 @@ export default function ProfilePage() {
         alert(`Équipe créée ! Code d'invitation : ${data.team.joinCode}`);
         setShowTeamForm(false);
         setTeamFormData({ name: '', description: '' });
-        // Refresh user data
-        window.location.reload();
+        // Update user data locally
+        setUser(data.user);
+        setTeam(data.user.team);
+        localStorage.setItem('user', JSON.stringify(data.user));
       } else {
         const error = await response.json();
         alert(error.error || 'Erreur lors de la création');
@@ -110,11 +115,14 @@ export default function ProfilePage() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         alert('Rejoint l\'équipe avec succès !');
         setShowJoinForm(false);
         setJoinCode('');
-        // Refresh user data
-        window.location.reload();
+        // Update user data locally
+        setUser(data.user);
+        setTeam(data.user.team);
+        localStorage.setItem('user', JSON.stringify(data.user));
       } else {
         const error = await response.json();
         alert(error.error || 'Erreur lors de la jonction');

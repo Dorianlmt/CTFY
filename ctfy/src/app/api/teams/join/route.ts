@@ -32,6 +32,13 @@ export async function POST(request: NextRequest) {
           id: team.id,
           name: team.name,
           description: team.description,
+        },
+        user: {
+          id: updatedUser.id,
+          email: updatedUser.email,
+          name: updatedUser.name,
+          isAdmin: updatedUser.isAdmin,
+          team: team,
         }
       },
       { status: 200 }

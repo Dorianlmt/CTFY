@@ -132,7 +132,7 @@ export default function FlagSubmissionModal({ challenge, onClose, onSubmit }: Fl
               required
             />
             <p className="text-gray-400 text-sm mt-2">
-              "Format attendu : CTF flag ou le flag exact"
+              Format attendu : CTF... ou le flag exact
             </p>
           </div>
 

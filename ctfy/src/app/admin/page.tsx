@@ -7,9 +7,12 @@ import CreateChallengeForm from '@/components/CreateChallengeForm';
 interface Challenge {
   id: string;
   title: string;
+  description: string;
   category: string;
   difficulty: string;
   points: number;
+  flag: string;
+  fileUrl?: string;
   isActive: boolean;
   _count: {
     submissions: number;
@@ -45,6 +48,7 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingChallenge, setEditingChallenge] = useState<Challenge | null>(null);
+  const [showEditForm, setShowEditForm] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -109,6 +113,51 @@ export default function AdminPage() {
       } else {
         const error = await response.json();
         alert(error.error || 'Erreur lors de la création');
+      }
+    } catch (err) {
+      alert('Erreur de connexion au serveur');
+    }
+  };
+
+  const handleEditChallenge = async (challenge: Challenge) => {
+    try {
+      // Fetch full challenge details
+      const response = await fetch(`/api/challenges/${challenge.id}`);
+      if (response.ok) {
+        const fullChallenge = await response.json();
+        setEditingChallenge(fullChallenge);
+        setShowEditForm(true);
+      } else {
+        alert('Erreur lors de la récupération des détails du challenge');
+      }
+    } catch (err) {
+      alert('Erreur de connexion au serveur');
+    }
+  };
+
+  const handleUpdateChallenge = async (challengeData: any) => {
+    if (!editingChallenge) return;
+
+    try {
+      const response = await fetch('/api/challenges/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: editingChallenge.id,
+          ...challengeData,
+        }),
+      });
+
+      if (response.ok) {
+        alert('Challenge mis à jour avec succès !');
+        setShowEditForm(false);
+        setEditingChallenge(null);
+        fetchData(); // Refresh data
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Erreur lors de la mise à jour');
       }
     } catch (err) {
       alert('Erreur de connexion au serveur');
@@ -290,6 +339,27 @@ export default function AdminPage() {
               />
             )}
 
+            {/* Edit Challenge Form */}
+            {showEditForm && editingChallenge && (
+              <CreateChallengeForm 
+                onClose={() => {
+                  setShowEditForm(false);
+                  setEditingChallenge(null);
+                }}
+                onSubmit={handleUpdateChallenge}
+                initialData={{
+                  title: editingChallenge.title,
+                  description: editingChallenge.description,
+                  category: editingChallenge.category,
+                  difficulty: editingChallenge.difficulty,
+                  points: editingChallenge.points,
+                  flag: editingChallenge.flag,
+                  fileUrl: editingChallenge.fileUrl || '',
+                  isActive: editingChallenge.isActive,
+                }}
+              />
+            )}
+
             <div className="bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
@@ -344,7 +414,12 @@ export default function AdminPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex space-x-2">
-                            <button className="text-cyan-400 hover:text-cyan-300 text-sm">Modifier</button>
+                            <button 
+                              onClick={() => handleEditChallenge(challenge)}
+                              className="text-cyan-400 hover:text-cyan-300 text-sm"
+                            >
+                              Modifier
+                            </button>
                             <button 
                               onClick={() => handleDeleteChallenge(challenge.id)}
                               className="text-red-400 hover:text-red-300 text-sm"
