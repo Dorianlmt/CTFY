@@ -4,6 +4,9 @@
 echo "Installing dependencies..."
 npm install
 
+echo "Installing dev dependencies for build..."
+npm install --include=dev
+
 echo "Generating Prisma client..."
 npx prisma generate
 
