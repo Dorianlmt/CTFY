@@ -111,7 +111,10 @@ export default function ChallengesPage() {
       'Reverse': 'text-orange-400 bg-orange-400/20',
       'Forensics': 'text-pink-400 bg-pink-400/20',
       'Pwn': 'text-red-400 bg-red-400/20',
-      'Misc': 'text-gray-400 bg-gray-400/20'
+      'Misc': 'text-gray-400 bg-gray-400/20',
+      'Osint': 'text-green-400 bg-green-400/20',
+      'Stegano': 'text-indigo-400 bg-indigo-400/20',
+      'Other': 'text-yellow-400 bg-yellow-400/20'
     };
     return colors[category as keyof typeof colors] || 'text-gray-400 bg-gray-400/20';
   };
@@ -215,71 +218,111 @@ export default function ChallengesPage() {
           </div>
         )}
 
-        {/* Challenges Grid */}
-        {!isLoading && !error && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {challenges.map((challenge) => (
-            <div
-              key={challenge.id}
-              className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all cursor-pointer group"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">
-                  {challenge.title}
-                </h3>
-                <div className="flex items-center space-x-2">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(challenge.difficulty)}`}>
-                    {challenge.difficulty}
-                  </span>
+        {/* Challenges by Category */}
+        {!isLoading && !error && (() => {
+          // Group challenges by category
+          const challengesByCategory = challenges.reduce((acc, challenge) => {
+            const category = challenge.category;
+            if (!acc[category]) {
+              acc[category] = [];
+            }
+            acc[category].push(challenge);
+            return acc;
+          }, {} as Record<string, Challenge[]>);
+
+          // Sort challenges within each category by difficulty (Facile -> Moyen -> Difficile)
+          const difficultyOrder = { 'Facile': 1, 'Moyen': 2, 'Difficile': 3 };
+          Object.keys(challengesByCategory).forEach(category => {
+            challengesByCategory[category].sort((a, b) => {
+              const difficultyA = difficultyOrder[a.difficulty as keyof typeof difficultyOrder] || 999;
+              const difficultyB = difficultyOrder[b.difficulty as keyof typeof difficultyOrder] || 999;
+              return difficultyA - difficultyB;
+            });
+          });
+
+          // Get categories that have challenges, sorted alphabetically
+          const categoriesWithChallenges = Object.keys(challengesByCategory).sort();
+
+          return (
+            <div className="space-y-8">
+              {categoriesWithChallenges.map((category) => (
+                <div key={category} className="space-y-4">
+                  {/* Category Header */}
+                  <div className="flex items-center space-x-4">
+                    <h2 className="text-2xl font-bold text-white">{category}</h2>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(category)}`}>
+                      {challengesByCategory[category].length} challenge{challengesByCategory[category].length > 1 ? 's' : ''}
+                    </span>
+                  </div>
+
+                  {/* Challenges Grid for this category */}
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {challengesByCategory[category].map((challenge) => (
+                      <div
+                        key={challenge.id}
+                        className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all cursor-pointer group"
+                      >
+                        <div className="flex items-start justify-between mb-4">
+                          <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">
+                            {challenge.title}
+                          </h3>
+                          <div className="flex items-center space-x-2">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(challenge.difficulty)}`}>
+                              {challenge.difficulty}
+                            </span>
+                          </div>
+                        </div>
+
+                        <p className="text-gray-300 mb-4 text-sm">
+                          {challenge.description}
+                        </p>
+
+                        <div className="flex items-center justify-between mb-4">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(challenge.category)}`}>
+                            {challenge.category}
+                          </span>
+                          <span className="text-cyan-400 font-bold">
+                            {challenge.points} pts
+                          </span>
+                        </div>
+
+                        {challenge.fileUrl && (
+                          <div className="mb-4">
+                            <a
+                              href={challenge.fileUrl}
+                              className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center"
+                              download
+                            >
+                              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              Télécharger le fichier
+                            </a>
+                          </div>
+                        )}
+
+                        <div className="flex space-x-2">
+                          <button 
+                            onClick={() => setSelectedChallenge(challenge)}
+                            className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-cyan-600 hover:to-purple-600 transition-all"
+                          >
+                            Voir le détail
+                          </button>
+                          <button 
+                            onClick={() => setSelectedChallenge(challenge)}
+                            className="px-4 py-2 border border-cyan-400 text-cyan-400 rounded-lg text-sm font-medium hover:bg-cyan-400 hover:text-white transition-all"
+                          >
+                            Soumettre
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              <p className="text-gray-300 mb-4 text-sm">
-                {challenge.description}
-              </p>
-
-              <div className="flex items-center justify-between mb-4">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(challenge.category)}`}>
-                  {challenge.category}
-                </span>
-                <span className="text-cyan-400 font-bold">
-                  {challenge.points} pts
-                </span>
-              </div>
-
-              {challenge.fileUrl && (
-                <div className="mb-4">
-                  <a
-                    href={challenge.fileUrl}
-                    className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center"
-                    download
-                  >
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Télécharger le fichier
-                  </a>
-                </div>
-              )}
-
-              <div className="flex space-x-2">
-                <button 
-                  onClick={() => setSelectedChallenge(challenge)}
-                  className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-cyan-600 hover:to-purple-600 transition-all"
-                >
-                  Voir le détail
-                </button>
-                <button 
-                  onClick={() => setSelectedChallenge(challenge)}
-                  className="px-4 py-2 border border-cyan-400 text-cyan-400 rounded-lg text-sm font-medium hover:bg-cyan-400 hover:text-white transition-all"
-                >
-                  Soumettre
-                </button>
-              </div>
+              ))}
             </div>
-          ))}
-          </div>
-        )}
+          );
+        })()}
 
         {!isLoading && !error && challenges.length === 0 && (
           <div className="text-center py-12">
