@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import CreateChallengeForm from '@/components/CreateChallengeForm';
 import TeamForm from '@/components/TeamForm';
+import TeamDetailsModal from '@/components/TeamDetailsModal';
 
 interface Challenge {
   id: string;
@@ -54,6 +55,8 @@ export default function AdminPage() {
   const [showTeamForm, setShowTeamForm] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [showEditTeamForm, setShowEditTeamForm] = useState(false);
+  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
+  const [showTeamDetails, setShowTeamDetails] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -268,6 +271,11 @@ export default function AdminPage() {
     } catch (err) {
       alert('Erreur de connexion au serveur');
     }
+  };
+
+  const handleViewTeam = (teamId: string) => {
+    setSelectedTeamId(teamId);
+    setShowTeamDetails(true);
   };
 
   if (!isAuthenticated) {
@@ -599,6 +607,12 @@ export default function AdminPage() {
                         <td className="px-6 py-4">
                           <div className="flex space-x-2">
                             <button 
+                              onClick={() => handleViewTeam(team.id)}
+                              className="text-blue-400 hover:text-blue-300 text-sm"
+                            >
+                              Voir
+                            </button>
+                            <button 
                               onClick={() => handleEditTeam(team)}
                               className="text-cyan-400 hover:text-cyan-300 text-sm"
                             >
@@ -629,6 +643,17 @@ export default function AdminPage() {
               <p className="text-gray-300">Fonctionnalité de gestion des utilisateurs en cours de développement</p>
             </div>
           </div>
+        )}
+
+        {/* Team Details Modal */}
+        {showTeamDetails && selectedTeamId && (
+          <TeamDetailsModal
+            teamId={selectedTeamId}
+            onClose={() => {
+              setShowTeamDetails(false);
+              setSelectedTeamId(null);
+            }}
+          />
         )}
       </main>
     </div>
