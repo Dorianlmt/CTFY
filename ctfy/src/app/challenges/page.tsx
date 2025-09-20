@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import FlagSubmissionModal from '@/components/FlagSubmissionModal';
 
-const categories = ['Tous', 'Web', 'Crypto', 'Reverse', 'Forensics', 'Pwn', 'Misc'];
+const categories = ['Tous', 'Web', 'Crypto', 'Reverse', 'Forensics', 'Pwn', 'Misc', 'Osint', 'Stegano', 'Other'];
 const difficulties = ['Toutes', 'Facile', 'Moyen', 'Difficile'];
 
 interface Challenge {

@@ -52,19 +52,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user already submitted for this challenge
-    const existingSubmission = await prisma.submission.findUnique({
+    // Check if user already submitted a CORRECT answer for this challenge
+    const existingCorrectSubmission = await prisma.submission.findFirst({
       where: {
-        userId_challengeId: {
-          userId,
-          challengeId,
-        },
+        userId,
+        challengeId,
+        isCorrect: true,
       },
     });
 
-    if (existingSubmission) {
+    if (existingCorrectSubmission) {
       return NextResponse.json(
-        { error: 'Vous avez déjà soumis une réponse pour ce challenge' },
+        { error: 'Vous avez déjà résolu ce challenge' },
         { status: 400 }
       );
     }
@@ -72,9 +71,20 @@ export async function POST(request: NextRequest) {
     // Validate flag
     const isCorrect = flag.trim() === challenge.flag.trim();
 
-    // Create submission
-    const submission = await prisma.submission.create({
-      data: {
+    // Create or update submission (upsert)
+    const submission = await prisma.submission.upsert({
+      where: {
+        userId_challengeId: {
+          userId,
+          challengeId,
+        },
+      },
+      update: {
+        flag: flag.trim(),
+        isCorrect,
+        submittedAt: new Date(),
+      },
+      create: {
         flag: flag.trim(),
         isCorrect,
         userId,
@@ -83,17 +93,22 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // If correct, update team points and lastSolveAt
+    // If correct, update team points and lastSolveAt (only if this is the first correct submission)
     if (isCorrect) {
-      await prisma.team.update({
-        where: { id: teamId },
-        data: {
-          points: {
-            increment: challenge.points,
+      // Check if this is the first time solving this challenge
+      const wasAlreadySolved = existingCorrectSubmission !== null;
+      
+      if (!wasAlreadySolved) {
+        await prisma.team.update({
+          where: { id: teamId },
+          data: {
+            points: {
+              increment: challenge.points,
+            },
+            lastSolveAt: new Date(),
           },
-          lastSolveAt: new Date(),
-        },
-      });
+        });
+      }
     }
 
     return NextResponse.json(

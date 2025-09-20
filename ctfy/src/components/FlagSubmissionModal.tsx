@@ -32,15 +32,22 @@ export default function FlagSubmissionModal({ challenge, onClose, onSubmit }: Fl
     setMessage('');
 
     try {
-      await onSubmit(challenge.id, flag.trim());
-      setMessage('Flag soumis avec succès !');
-      setIsSuccess(true);
-      setFlag('');
+      const result = await onSubmit(challenge.id, flag.trim());
       
-      // Close modal after 2 seconds
-      setTimeout(() => {
-        onClose();
-      }, 2000);
+      if (result.isCorrect) {
+        setMessage('Flag correct ! Points attribués.');
+        setIsSuccess(true);
+        setFlag('');
+        
+        // Close modal after 2 seconds
+        setTimeout(() => {
+          onClose();
+        }, 2000);
+      } else {
+        setMessage('Flag incorrect. Essayez encore !');
+        setIsSuccess(false);
+        setFlag(''); // Clear the flag for retry
+      }
     } catch (error: any) {
       setMessage(error.message || 'Erreur lors de la soumission');
       setIsSuccess(false);

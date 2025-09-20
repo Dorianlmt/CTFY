@@ -113,6 +113,8 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
                 <option value="Forensics" className="bg-slate-800">Forensics</option>
                 <option value="Pwn" className="bg-slate-800">Pwn</option>
                 <option value="Misc" className="bg-slate-800">Misc</option>
+                <option value="Osint" className="bg-slate-800">Osint</option>
+                <option value="Stégano" className="bg-slate-800">Stégano</option>
               </select>
             </div>
 
