@@ -1,76 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createTeam } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, description, userId } = await request.json();
+    const { name, description, joinCode, points } = await request.json();
 
     // Validate input
-    if (!name) {
+    if (!name || !joinCode) {
       return NextResponse.json(
-        { error: 'Le nom de l\'équipe est requis' },
+        { error: 'Le nom et le code d\'invitation sont requis' },
         { status: 400 }
       );
     }
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'ID utilisateur requis' },
-        { status: 400 }
-      );
-    }
-
-    // Check if user exists
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
+    // Check if team name already exists
+    const existingTeam = await prisma.team.findUnique({
+      where: { name },
     });
 
-    if (!user) {
+    if (existingTeam) {
       return NextResponse.json(
-        { error: 'Utilisateur non trouvé' },
-        { status: 404 }
+        { error: 'Une équipe avec ce nom existe déjà' },
+        { status: 400 }
       );
     }
 
-    // Check if user is already in a team
-    if (user.teamId) {
+    // Check if join code already exists
+    const existingJoinCode = await prisma.team.findUnique({
+      where: { joinCode },
+    });
+
+    if (existingJoinCode) {
       return NextResponse.json(
-        { error: 'Vous êtes déjà dans une équipe' },
+        { error: 'Ce code d\'invitation est déjà utilisé' },
         { status: 400 }
       );
     }
 
     // Create team
-    const team = await createTeam(name, description);
-
-    // Add user to the team
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { teamId: team.id },
-      include: {
-        team: true,
+    const team = await prisma.team.create({
+      data: {
+        name,
+        description: description || null,
+        joinCode,
+        points: points || 0,
       },
     });
 
-    return NextResponse.json(
-      { 
-        message: 'Équipe créée avec succès',
-        team: {
-          id: team.id,
-          name: team.name,
-          joinCode: team.joinCode,
-          description: team.description,
-        },
-        user: {
-          id: updatedUser.id,
-          email: updatedUser.email,
-          name: updatedUser.name,
-          isAdmin: updatedUser.isAdmin,
-          team: updatedUser.team,
-        }
-      },
-      { status: 201 }
-    );
+    return NextResponse.json(team, { status: 201 });
   } catch (error) {
     console.error('Team creation error:', error);
     return NextResponse.json(

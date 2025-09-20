@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import CreateChallengeForm from '@/components/CreateChallengeForm';
+import TeamForm from '@/components/TeamForm';
 
 interface Challenge {
   id: string;
@@ -23,6 +24,7 @@ interface Team {
   id: string;
   name: string;
   joinCode: string;
+  description?: string;
   points: number;
   createdAt: string;
   _count: {
@@ -49,6 +51,9 @@ export default function AdminPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingChallenge, setEditingChallenge] = useState<Challenge | null>(null);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [showTeamForm, setShowTeamForm] = useState(false);
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
+  const [showEditTeamForm, setShowEditTeamForm] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -176,6 +181,85 @@ export default function AdminPage() {
 
       if (response.ok) {
         alert('Challenge supprimé avec succès !');
+        fetchData(); // Refresh data
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Erreur lors de la suppression');
+      }
+    } catch (err) {
+      alert('Erreur de connexion au serveur');
+    }
+  };
+
+  const handleCreateTeam = async (teamData: any) => {
+    try {
+      const response = await fetch('/api/teams/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(teamData),
+      });
+
+      if (response.ok) {
+        alert('Équipe créée avec succès !');
+        setShowTeamForm(false);
+        fetchData(); // Refresh data
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Erreur lors de la création');
+      }
+    } catch (err) {
+      alert('Erreur de connexion au serveur');
+    }
+  };
+
+  const handleEditTeam = async (team: Team) => {
+    setEditingTeam(team);
+    setShowEditTeamForm(true);
+  };
+
+  const handleUpdateTeam = async (teamData: any) => {
+    if (!editingTeam) return;
+
+    try {
+      const response = await fetch('/api/teams/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: editingTeam.id,
+          ...teamData,
+        }),
+      });
+
+      if (response.ok) {
+        alert('Équipe mise à jour avec succès !');
+        setShowEditTeamForm(false);
+        setEditingTeam(null);
+        fetchData(); // Refresh data
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Erreur lors de la mise à jour');
+      }
+    } catch (err) {
+      alert('Erreur de connexion au serveur');
+    }
+  };
+
+  const handleDeleteTeam = async (id: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette équipe ?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/teams/delete?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert('Équipe supprimée avec succès !');
         fetchData(); // Refresh data
       } else {
         const error = await response.json();
@@ -442,10 +526,33 @@ export default function AdminPage() {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold text-white">Gestion des Équipes</h2>
-              <button className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-cyan-600 hover:to-purple-600 transition-all">
+              <button 
+                onClick={() => setShowTeamForm(true)}
+                className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-cyan-600 hover:to-purple-600 transition-all"
+              >
                 + Nouvelle Équipe
               </button>
             </div>
+
+            {/* Create Team Form */}
+            {showTeamForm && (
+              <TeamForm 
+                onClose={() => setShowTeamForm(false)}
+                onSubmit={handleCreateTeam}
+              />
+            )}
+
+            {/* Edit Team Form */}
+            {showEditTeamForm && editingTeam && (
+              <TeamForm 
+                onClose={() => {
+                  setShowEditTeamForm(false);
+                  setEditingTeam(null);
+                }}
+                onSubmit={handleUpdateTeam}
+                initialData={editingTeam}
+              />
+            )}
 
             <div className="bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden">
               <div className="overflow-x-auto">
@@ -453,6 +560,7 @@ export default function AdminPage() {
                   <thead className="bg-white/5">
                     <tr>
                       <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Nom</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Description</th>
                       <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Code d'invitation</th>
                       <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Membres</th>
                       <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Points</th>
@@ -463,13 +571,13 @@ export default function AdminPage() {
                   <tbody className="divide-y divide-white/10">
                     {isLoading ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-4 text-center text-gray-300">
+                        <td colSpan={7} className="px-6 py-4 text-center text-gray-300">
                           Chargement...
                         </td>
                       </tr>
                     ) : teams.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-4 text-center text-gray-300">
+                        <td colSpan={7} className="px-6 py-4 text-center text-gray-300">
                           Aucune équipe trouvée
                         </td>
                       </tr>
@@ -477,6 +585,9 @@ export default function AdminPage() {
                       teams.map((team) => (
                       <tr key={team.id} className="hover:bg-white/5 transition-colors">
                         <td className="px-6 py-4 text-white font-semibold">{team.name}</td>
+                        <td className="px-6 py-4 text-gray-300 max-w-xs truncate">
+                          {team.description || 'Aucune description'}
+                        </td>
                         <td className="px-6 py-4">
                           <code className="bg-white/10 px-2 py-1 rounded text-cyan-400 font-mono">
                             {team.joinCode}
@@ -484,11 +595,21 @@ export default function AdminPage() {
                         </td>
                         <td className="px-6 py-4 text-gray-300">{team._count.members}</td>
                         <td className="px-6 py-4 text-cyan-400 font-bold">{team.points}</td>
-                        <td className="px-6 py-4 text-gray-300">{team.createdAt}</td>
+                        <td className="px-6 py-4 text-gray-300">{new Date(team.createdAt).toLocaleDateString('fr-FR')}</td>
                         <td className="px-6 py-4">
                           <div className="flex space-x-2">
-                            <button className="text-cyan-400 hover:text-cyan-300 text-sm">Modifier</button>
-                            <button className="text-red-400 hover:text-red-300 text-sm">Supprimer</button>
+                            <button 
+                              onClick={() => handleEditTeam(team)}
+                              className="text-cyan-400 hover:text-cyan-300 text-sm"
+                            >
+                              Modifier
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteTeam(team.id)}
+                              className="text-red-400 hover:text-red-300 text-sm"
+                            >
+                              Supprimer
+                            </button>
                           </div>
                         </td>
                       </tr>
