@@ -107,7 +107,7 @@ export default function Home() {
             </div>
           </div>
           <p className="ynov-text-secondary mb-6">
-            Plateforme de Capture The Flag pour les étudiants Cyber Security d'Ynov Campus Rennes
+            Plateforme de Capture The Flag pour les étudiants Cybersecurité de Rennes Ynov Campus
           </p>
           <div className="flex justify-center space-x-6">
             <a href="#" className="ynov-text-secondary hover:ynov-text-cyber transition-colors">À propos</a>
@@ -115,7 +115,7 @@ export default function Home() {
             <a href="#" className="ynov-text-secondary hover:ynov-text-cyber transition-colors">Règles</a>
           </div>
           <div className="mt-6 text-sm ynov-text-muted">
-            © 2024 Ynov Campus Rennes - Filière Cyber Security
+            © 2025 Rennes Ynov Campus - Filière Cybersecurité
           </div>
         </div>
       </footer>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 
 interface YnovHeaderProps {
@@ -24,12 +25,18 @@ export default function YnovHeader({ isAdmin = false, user, onLogout }: YnovHead
           {/* Logo et titre */}
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 ynov-gradient-cyber rounded-lg flex items-center justify-center">
-                <span className="text-ynov-primary font-bold text-xl">Y</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold ynov-text-primary">CTFY</h1>
-                <p className="text-xs ynov-text-cyber">Rennes Ynov Campus</p>
+              
+              <div className="flex items-center space-x-3">
+                <Image
+                  src="/styles/filiere-cyber.png"
+                  alt="CTFY - Filière Cyber Security"
+                  width={80}
+                  height={40}
+                  className="h-10 w-auto"
+                />
+                <div>
+                  <p className="text-xs ynov-text-cyber">Rennes Ynov Campus</p>
+                </div>
               </div>
             </Link>
           </div>
