@@ -75,6 +75,12 @@ export default function YnovHeader({ isAdmin = false, user, onLogout }: YnovHead
                     <p className="text-xs ynov-text-cyber">Équipe: {user.team.name}</p>
                   )}
                 </div>
+                <Link
+                  href="/profile"
+                  className="px-4 py-2 text-sm ynov-text-secondary hover:ynov-text-cyber transition-colors border border-gray-700 hover:border-ynov-cyber rounded-lg"
+                >
+                  Profil
+                </Link>
                 <button
                   onClick={onLogout}
                   className="px-4 py-2 text-sm ynov-text-secondary hover:ynov-text-cyber transition-colors border border-gray-700 hover:border-ynov-cyber rounded-lg"
@@ -137,6 +143,56 @@ export default function YnovHeader({ isAdmin = false, user, onLogout }: YnovHead
                 >
                   Administration
                 </Link>
+              )}
+              
+              {/* Section utilisateur connecté */}
+              {user && (
+                <>
+                  <div className="border-t border-gray-700 my-2"></div>
+                  <div className="px-4 py-2">
+                    <p className="text-sm ynov-text-primary font-medium">{user.name}</p>
+                    {user.team && (
+                      <p className="text-xs ynov-text-cyber">Équipe: {user.team.name}</p>
+                    )}
+                  </div>
+                  <Link 
+                    href="/profile" 
+                    className="ynov-text-secondary hover:ynov-text-cyber transition-colors font-medium px-4 py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Profil
+                  </Link>
+                  <button
+                    onClick={() => {
+                      if (onLogout) onLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="ynov-text-secondary hover:ynov-text-cyber transition-colors font-medium px-4 py-2 text-left"
+                  >
+                    Déconnexion
+                  </button>
+                </>
+              )}
+              
+              {/* Section utilisateur non connecté */}
+              {!user && (
+                <>
+                  <div className="border-t border-gray-700 my-2"></div>
+                  <Link 
+                    href="/login" 
+                    className="ynov-text-secondary hover:ynov-text-cyber transition-colors font-medium px-4 py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Connexion
+                  </Link>
+                  <Link 
+                    href="/register" 
+                    className="ynov-btn-primary font-medium px-4 py-2 mx-4 text-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Inscription
+                  </Link>
+                </>
               )}
             </div>
           </div>
