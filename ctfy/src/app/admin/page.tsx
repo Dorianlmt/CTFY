@@ -8,6 +8,7 @@ import TeamDetailsModal from '@/components/TeamDetailsModal';
 import TeamMembersModal from '@/components/TeamMembersModal';
 import UserForm from '@/components/UserForm';
 import UserDetailsModal from '@/components/UserDetailsModal';
+import YnovHeader from '@/components/YnovHeader';
 
 interface Challenge {
   id: string;
@@ -542,62 +543,57 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6">
-        <Link href="/" className="text-2xl font-bold text-white">
-          <span className="text-cyan-400">CTF</span>Y Admin
-        </Link>
-        <div className="flex items-center space-x-4">
-          <Link href="/" className="text-white hover:text-cyan-400 transition-colors">
-            Retour au site
-          </Link>
-          <button
-            onClick={() => setIsAuthenticated(false)}
-            className="px-4 py-2 text-red-400 hover:text-red-300 transition-colors"
-          >
-            Déconnexion
-          </button>
-        </div>
-      </nav>
+    <div className="min-h-screen ynov-bg-primary">
+      <YnovHeader 
+        isAdmin={true}
+        user={undefined}
+        onLogout={() => setIsAuthenticated(false)}
+      />
 
       <main className="container mx-auto px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Panel d'Administration</h1>
-          <p className="text-gray-300">Gérez les challenges, équipes et utilisateurs</p>
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-12 h-12 ynov-gradient-cyber rounded-lg flex items-center justify-center">
+              <span className="text-ynov-primary font-bold text-2xl">Y</span>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold ynov-text-primary">Panel d'Administration</h1>
+              <p className="ynov-text-secondary">Gérez les challenges, équipes et utilisateurs - Ynov Campus Rennes</p>
+            </div>
+          </div>
         </div>
 
         {/* Stats Cards */}
         {stats && (
           <div className="grid md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-cyan-400 mb-2">{stats.challenges}</div>
-              <div className="text-gray-300">Challenges</div>
+            <div className="ynov-card p-6 text-center">
+              <div className="text-3xl font-bold ynov-text-cyber mb-2">{stats.challenges}</div>
+              <div className="ynov-text-secondary">Challenges</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-purple-400 mb-2">{stats.teams}</div>
-              <div className="text-gray-300">Équipes</div>
+            <div className="ynov-card p-6 text-center">
+              <div className="text-3xl font-bold ynov-text-accent mb-2">{stats.teams}</div>
+              <div className="ynov-text-secondary">Équipes</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-green-400 mb-2">{stats.users}</div>
-              <div className="text-gray-300">Utilisateurs</div>
+            <div className="ynov-card p-6 text-center">
+              <div className="text-3xl font-bold ynov-text-cyber mb-2">{stats.users}</div>
+              <div className="ynov-text-secondary">Utilisateurs</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-yellow-400 mb-2">{stats.submissions}</div>
-              <div className="text-gray-300">Soumissions</div>
+            <div className="ynov-card p-6 text-center">
+              <div className="text-3xl font-bold ynov-text-accent mb-2">{stats.submissions}</div>
+              <div className="ynov-text-secondary">Soumissions</div>
             </div>
           </div>
         )}
 
         {/* Tabs */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
+        <div className="ynov-card p-6 mb-8">
           <div className="flex space-x-4">
             <button
               onClick={() => setActiveTab('challenges')}
               className={`px-6 py-3 rounded-lg font-medium transition-all ${
                 activeTab === 'challenges'
-                  ? 'bg-cyan-500 text-white'
-                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  ? 'ynov-gradient-cyber text-ynov-primary'
+                  : 'ynov-text-secondary hover:ynov-text-cyber hover:bg-white/10'
               }`}
             >
               Challenges
@@ -606,8 +602,8 @@ export default function AdminPage() {
               onClick={() => setActiveTab('teams')}
               className={`px-6 py-3 rounded-lg font-medium transition-all ${
                 activeTab === 'teams'
-                  ? 'bg-cyan-500 text-white'
-                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  ? 'ynov-gradient-cyber text-ynov-primary'
+                  : 'ynov-text-secondary hover:ynov-text-cyber hover:bg-white/10'
               }`}
             >
               Équipes
@@ -616,8 +612,8 @@ export default function AdminPage() {
               onClick={() => setActiveTab('users')}
               className={`px-6 py-3 rounded-lg font-medium transition-all ${
                 activeTab === 'users'
-                  ? 'bg-cyan-500 text-white'
-                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  ? 'ynov-gradient-cyber text-ynov-primary'
+                  : 'ynov-text-secondary hover:ynov-text-cyber hover:bg-white/10'
               }`}
             >
               Utilisateurs

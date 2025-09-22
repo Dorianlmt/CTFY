@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import YnovHeader from '@/components/YnovHeader';
+
 
 interface Team {
   id: string;
@@ -87,39 +89,33 @@ export default function LeaderboardPage() {
 
   const getRankColor = (rank: number) => {
     if (rank === 1) return 'text-yellow-400';
-    if (rank === 2) return 'text-gray-300';
+    if (rank === 2) return 'ynov-text-secondary';
     if (rank === 3) return 'text-orange-400';
-    return 'text-gray-400';
+    return 'ynov-text-muted';
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6">
-        <Link href="/" className="text-2xl font-bold text-white">
-          <span className="text-cyan-400">CTF</span>Y
-        </Link>
-        <div className="flex items-center space-x-4">
-          <Link href="/challenges" className="text-white hover:text-cyan-400 transition-colors">
-            Challenges
-          </Link>
-          <Link href="/login" className="px-4 py-2 text-white hover:text-cyan-400 transition-colors">
-            Connexion
-          </Link>
-        </div>
-      </nav>
+    <div className="min-h-screen ynov-bg-primary">
+      <YnovHeader />
 
       <main className="container mx-auto px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Classement</h1>
-          <p className="text-gray-300">Découvrez les meilleures équipes et leur progression</p>
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-10 h-10 ynov-gradient-cyber rounded-lg flex items-center justify-center">
+              <span className="text-ynov-primary font-bold text-xl">Y</span>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold ynov-text-primary">Classement</h1>
+              <p className="ynov-text-secondary">Découvrez les meilleures équipes et leur progression</p>
+            </div>
+          </div>
         </div>
 
         {/* Loading State */}
         {isLoading && (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-            <p className="text-gray-300">Chargement du classement...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ynov-cyber mx-auto mb-4"></div>
+            <p className="ynov-text-secondary">Chargement du classement...</p>
           </div>
         )}
 
@@ -133,36 +129,36 @@ export default function LeaderboardPage() {
         {/* Stats Cards */}
         {!isLoading && !error && stats && (
           <div className="grid md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-cyan-400 mb-2">{stats.teams}</div>
-              <div className="text-gray-300">Équipes actives</div>
+            <div className="ynov-card p-6 text-center">
+              <div className="text-3xl font-bold ynov-text-cyber mb-2">{stats.teams}</div>
+              <div className="ynov-text-secondary">Équipes actives</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-purple-400 mb-2">{stats.users}</div>
-              <div className="text-gray-300">Participants</div>
+            <div className="ynov-card p-6 text-center">
+              <div className="text-3xl font-bold ynov-text-accent mb-2">{stats.users}</div>
+              <div className="ynov-text-secondary">Participants</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-green-400 mb-2">{stats.challenges}</div>
-              <div className="text-gray-300">Challenges</div>
+            <div className="ynov-card p-6 text-center">
+              <div className="text-3xl font-bold ynov-text-cyber mb-2">{stats.challenges}</div>
+              <div className="ynov-text-secondary">Challenges</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold text-yellow-400 mb-2">{stats.averagePoints}</div>
-              <div className="text-gray-300">Moyenne points</div>
+            <div className="ynov-card p-6 text-center">
+              <div className="text-3xl font-bold ynov-text-accent mb-2">{stats.averagePoints}</div>
+              <div className="ynov-text-secondary">Moyenne points</div>
             </div>
           </div>
         )}
 
         {/* Sort Controls */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
+        <div className="ynov-card p-6 mb-8">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-white">Classement des équipes</h2>
+            <h2 className="text-xl font-bold ynov-text-primary">Classement des équipes</h2>
             <div className="flex space-x-4">
               <button
                 onClick={() => setSortBy('points')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   sortBy === 'points'
-                    ? 'bg-cyan-500 text-white'
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                    ? 'ynov-gradient-cyber text-ynov-primary'
+                    : 'ynov-text-secondary hover:ynov-text-cyber hover:bg-white/10'
                 }`}
               >
                 Par points
@@ -171,8 +167,8 @@ export default function LeaderboardPage() {
                 onClick={() => setSortBy('lastSolve')}
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   sortBy === 'lastSolve'
-                    ? 'bg-cyan-500 text-white'
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                    ? 'ynov-gradient-cyber text-ynov-primary'
+                    : 'ynov-text-secondary hover:ynov-text-cyber hover:bg-white/10'
                 }`}
               >
                 Par dernière résolution
@@ -182,16 +178,16 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Leaderboard Table */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden">
+        <div className="ynov-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-white/5">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Rang</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Équipe</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Points</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Membres</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Dernière résolution</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Rang</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Équipe</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Points</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Membres</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Dernière résolution</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
@@ -204,20 +200,20 @@ export default function LeaderboardPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                        <div className="w-10 h-10 ynov-gradient-cyber rounded-full flex items-center justify-center text-ynov-primary font-bold mr-4">
                           {team.name.charAt(0)}
                         </div>
                         <div>
-                          <div className="text-white font-semibold">{team.name}</div>
-                          <div className="text-gray-400 text-sm">ID: {team.id}</div>
+                          <div className="ynov-text-primary font-semibold">{team.name}</div>
+                          <div className="ynov-text-muted text-sm">ID: {team.id}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-cyan-400 font-bold text-lg">{team.points.toLocaleString()}</div>
+                      <div className="ynov-text-cyber font-bold text-lg">{team.points.toLocaleString()}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center text-gray-300">
+                      <div className="flex items-center ynov-text-secondary">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
@@ -225,7 +221,7 @@ export default function LeaderboardPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-gray-300 text-sm">
+                      <div className="ynov-text-secondary text-sm">
                         {formatLastSolve(team.lastSolveAt)}
                       </div>
                     </td>
@@ -239,7 +235,7 @@ export default function LeaderboardPage() {
         {/* Top 3 Podium */}
         {!isLoading && !error && teams.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-white mb-8 text-center">Podium</h2>
+            <h2 className="text-2xl font-bold ynov-text-primary mb-8 text-center">Podium</h2>
             <div className="flex justify-center items-end space-x-8">
               {teams.slice(0, 3).map((team, index) => {
               const heights = ['h-32', 'h-24', 'h-20'];
@@ -256,8 +252,8 @@ export default function LeaderboardPage() {
                       {getRankIcon(team.rank)}
                     </div>
                   </div>
-                  <div className="text-white font-bold text-lg">{team.name}</div>
-                  <div className="text-cyan-400 font-semibold">{team.points} pts</div>
+                  <div className="ynov-text-primary font-bold text-lg">{team.name}</div>
+                  <div className="ynov-text-cyber font-semibold">{team.points} pts</div>
                 </div>
               );
               })}

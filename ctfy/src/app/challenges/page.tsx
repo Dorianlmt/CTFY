@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import FlagSubmissionModal from '@/components/FlagSubmissionModal';
+import YnovHeader from '@/components/YnovHeader';
 
 const categories = ['Tous', 'Web', 'Crypto', 'Reverse', 'Forensics', 'Pwn', 'Misc', 'Osint', 'Stegano', 'Other'];
 const difficulties = ['Toutes', 'Facile', 'Moyen', 'Difficile'];
@@ -120,60 +121,55 @@ export default function ChallengesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6">
-        <Link href="/" className="text-2xl font-bold text-white">
-          <span className="text-cyan-400">CTF</span>Y
-        </Link>
-        <div className="flex items-center space-x-4">
-          <Link href="/leaderboard" className="text-white hover:text-cyan-400 transition-colors">
-            Classement
-          </Link>
-          {user ? (
-            <Link href="/profile" className="px-4 py-2 text-white hover:text-cyan-400 transition-colors">
-              Mon Profil
-            </Link>
-          ) : (
-            <Link href="/login" className="px-4 py-2 text-white hover:text-cyan-400 transition-colors">
-              Connexion
-            </Link>
-          )}
-        </div>
-      </nav>
+    <div className="min-h-screen ynov-bg-primary">
+      <YnovHeader 
+        isAdmin={user?.isAdmin || false}
+        user={user}
+        onLogout={() => {
+          localStorage.removeItem('user');
+          setUser(null);
+        }}
+      />
 
       <main className="container mx-auto px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Challenges</h1>
-          <p className="text-gray-300">Relevez des défis de cybersécurité et gagnez des points</p>
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-10 h-10 ynov-gradient-cyber rounded-lg flex items-center justify-center">
+              <span className="text-ynov-primary font-bold text-xl">Y</span>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold ynov-text-primary">Challenges</h1>
+              <p className="ynov-text-secondary">Relevez des défis de cybersécurité et gagnez des points</p>
+            </div>
+          </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
+        <div className="ynov-card p-6 mb-8">
           <div className="grid md:grid-cols-3 gap-4">
             {/* Search */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ynov-text-secondary mb-2">
                 Rechercher
               </label>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="ynov-input w-full"
                 placeholder="Titre ou description..."
               />
             </div>
 
             {/* Category Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ynov-text-secondary mb-2">
                 Catégorie
               </label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="ynov-input w-full"
               >
                 {categories.map(category => (
                   <option key={category} value={category} className="bg-slate-800">
@@ -185,13 +181,13 @@ export default function ChallengesPage() {
 
             {/* Difficulty Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ynov-text-secondary mb-2">
                 Difficulté
               </label>
               <select
                 value={selectedDifficulty}
                 onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="ynov-input w-full"
               >
                 {difficulties.map(difficulty => (
                   <option key={difficulty} value={difficulty} className="bg-slate-800">
@@ -206,8 +202,8 @@ export default function ChallengesPage() {
         {/* Loading State */}
         {isLoading && (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-            <p className="text-gray-300">Chargement des challenges...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ynov-cyber mx-auto mb-4"></div>
+            <p className="ynov-text-secondary">Chargement des challenges...</p>
           </div>
         )}
 
@@ -249,7 +245,7 @@ export default function ChallengesPage() {
                 <div key={category} className="space-y-4">
                   {/* Category Header */}
                   <div className="flex items-center space-x-4">
-                    <h2 className="text-2xl font-bold text-white">{category}</h2>
+                    <h2 className="text-2xl font-bold ynov-text-primary">{category}</h2>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(category)}`}>
                       {challengesByCategory[category].length} challenge{challengesByCategory[category].length > 1 ? 's' : ''}
                     </span>
@@ -260,10 +256,10 @@ export default function ChallengesPage() {
                     {challengesByCategory[category].map((challenge) => (
                       <div
                         key={challenge.id}
-                        className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all cursor-pointer group"
+                        className="ynov-card p-6 cursor-pointer group"
                       >
                         <div className="flex items-start justify-between mb-4">
-                          <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">
+                          <h3 className="text-xl font-bold ynov-text-primary group-hover:ynov-text-cyber transition-colors">
                             {challenge.title}
                           </h3>
                           <div className="flex items-center space-x-2">
@@ -273,7 +269,7 @@ export default function ChallengesPage() {
                           </div>
                         </div>
 
-                        <p className="text-gray-300 mb-4 text-sm">
+                        <p className="ynov-text-secondary mb-4 text-sm">
                           {challenge.description}
                         </p>
 
@@ -281,7 +277,7 @@ export default function ChallengesPage() {
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(challenge.category)}`}>
                             {challenge.category}
                           </span>
-                          <span className="text-cyan-400 font-bold">
+                          <span className="ynov-text-cyber font-bold">
                             {challenge.points} pts
                           </span>
                         </div>
@@ -290,7 +286,7 @@ export default function ChallengesPage() {
                           <div className="mb-4">
                             <a
                               href={challenge.fileUrl}
-                              className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center"
+                              className="ynov-text-cyber hover:ynov-text-accent text-sm flex items-center"
                               download
                             >
                               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,13 +300,13 @@ export default function ChallengesPage() {
                         <div className="flex space-x-2">
                           <button 
                             onClick={() => setSelectedChallenge(challenge)}
-                            className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-cyan-600 hover:to-purple-600 transition-all"
+                            className="flex-1 ynov-btn-primary text-sm py-2 px-4"
                           >
                             Voir le détail
                           </button>
                           <button 
                             onClick={() => setSelectedChallenge(challenge)}
-                            className="px-4 py-2 border border-cyan-400 text-cyan-400 rounded-lg text-sm font-medium hover:bg-cyan-400 hover:text-white transition-all"
+                            className="ynov-btn-secondary text-sm py-2 px-4"
                           >
                             Soumettre
                           </button>

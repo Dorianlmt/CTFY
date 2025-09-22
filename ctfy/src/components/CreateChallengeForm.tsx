@@ -68,14 +68,19 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-slate-800 rounded-xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="ynov-card p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-2xl font-bold text-white">
-            {initialData ? 'Modifier le Challenge' : 'Créer un Challenge'}
-          </h3>
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 ynov-gradient-cyber rounded-lg flex items-center justify-center">
+              <span className="text-ynov-primary font-bold text-lg">Y</span>
+            </div>
+            <h3 className="text-2xl font-bold ynov-text-primary">
+              {initialData ? 'Modifier le Challenge' : 'Créer un Challenge'}
+            </h3>
+          </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white text-2xl"
+            className="ynov-text-secondary hover:ynov-text-primary text-2xl"
           >
             ×
           </button>
@@ -84,27 +89,27 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ynov-text-secondary mb-2">
                 Titre *
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="ynov-input w-full"
                 placeholder="Titre du challenge"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium ynov-text-secondary mb-2">
                 Catégorie *
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="ynov-input w-full"
                 required
               >
                 <option value="Web" className="bg-slate-800">Web</option>
@@ -152,13 +157,13 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ynov-text-secondary mb-2">
               Description *
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="ynov-input w-full"
               placeholder="Description du challenge"
               rows={4}
               required
@@ -166,27 +171,27 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ynov-text-secondary mb-2">
               Flag *
             </label>
             <input
               type="text"
               value={formData.flag}
               onChange={(e) => setFormData({ ...formData, flag: e.target.value })}
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="ynov-input w-full"
               placeholder="CTF{...}"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ynov-text-secondary mb-2">
               Statut
             </label>
             <select
               value={formData.isActive ? 'active' : 'inactive'}
               onChange={(e) => setFormData({ ...formData, isActive: e.target.value === 'active' })}
-              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="ynov-input w-full"
             >
               <option value="active" className="bg-slate-800">Actif</option>
               <option value="inactive" className="bg-slate-800">Inactif</option>
@@ -194,23 +199,23 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium ynov-text-secondary mb-2">
               Fichier à joindre (optionnel)
             </label>
             <div className="space-y-4">
               <input
                 type="file"
                 onChange={handleFileChange}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500 file:text-white hover:file:bg-cyan-600"
+                className="ynov-input w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-ynov-cyber file:text-ynov-primary hover:file:bg-ynov-cyber-dark"
                 accept=".zip,.rar,.7z,.tar,.gz,.pdf,.txt,.doc,.docx,.jpg,.jpeg,.png,.gif,.mp4,.mp3,.exe,.bin"
               />
               {selectedFile && (
-                <div className="text-sm text-gray-300">
+                <div className="text-sm ynov-text-secondary">
                   Fichier sélectionné : {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
                 </div>
               )}
               {isUploading && (
-                <div className="text-cyan-400 text-sm">
+                <div className="ynov-text-cyber text-sm">
                   Upload en cours...
                 </div>
               )}
@@ -220,7 +225,7 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
                 </div>
               )}
             </div>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="ynov-text-muted text-sm mt-2">
               Formats acceptés : ZIP, RAR, PDF, images, vidéos, exécutables (max 10MB)
             </p>
           </div>
@@ -229,14 +234,14 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-500/20 transition-all"
+              className="px-6 py-3 border border-gray-500 ynov-text-secondary rounded-lg hover:bg-gray-500/20 transition-all"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={isLoading || isUploading}
-              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 text-white rounded-lg font-semibold hover:from-cyan-600 hover:to-purple-600 transition-all disabled:opacity-50"
+              className="ynov-btn-primary px-6 py-3 disabled:opacity-50"
             >
               {isLoading ? (initialData ? 'Mise à jour...' : 'Création...') : isUploading ? 'Upload...' : (initialData ? 'Mettre à jour' : 'Créer le Challenge')}
             </button>
