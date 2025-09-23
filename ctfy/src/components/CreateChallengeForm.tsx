@@ -120,6 +120,7 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
                 <option value="Misc" className="bg-slate-800">Misc</option>
                 <option value="Osint" className="bg-slate-800">Osint</option>
                 <option value="Stégano" className="bg-slate-800">Stégano</option>
+                <option value="Lockpicking" className="bg-slate-800">Lockpicking</option>
                 <option value="Other" className="bg-slate-800">Other</option>
               </select>
             </div>
@@ -207,7 +208,7 @@ export default function CreateChallengeForm({ onClose, onSubmit, initialData }: 
                 type="file"
                 onChange={handleFileChange}
                 className="ynov-input w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-ynov-cyber file:text-ynov-primary hover:file:bg-ynov-cyber-dark"
-                accept=".zip,.rar,.7z,.tar,.gz,.pdf,.txt,.doc,.docx,.jpg,.jpeg,.png,.gif,.mp4,.mp3,.exe,.bin"
+                accept=".zip,.rar,.7z,.tar,.gz,.pdf,.txt,.doc,.docx,.jpg,.jpeg,.png,.gif,.mp4,.mp3,.wav,.exe,.bin"
               />
               {selectedFile && (
                 <div className="text-sm ynov-text-secondary">

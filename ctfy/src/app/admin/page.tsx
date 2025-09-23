@@ -89,6 +89,18 @@ export default function AdminPage() {
   const [challengeSortOrder, setChallengeSortOrder] = useState<'asc' | 'desc'>('asc');
 
   useEffect(() => {
+    // Vérifier si l'utilisateur est admin au chargement
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      if (user.isAdmin) {
+        setIsAuthenticated(true);
+        setShowTokenForm(false);
+        fetchData();
+        return;
+      }
+    }
+    
     if (isAuthenticated) {
       fetchData();
     }
@@ -494,22 +506,38 @@ export default function AdminPage() {
     }
   };
 
-  if (!isAuthenticated) {
+  // Vérifier si l'utilisateur est admin
+  const userData = localStorage.getItem('user');
+  const isUserAdmin = userData ? JSON.parse(userData).isAdmin : false;
+
+  // Rediriger les utilisateurs non-admin vers l'accueil
+  if (!userData) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
+    return null;
+  }
+
+  if (!isUserAdmin && !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+      <div className="min-h-screen ynov-bg-primary flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <Link href="/" className="text-3xl font-bold text-white">
-              <span className="text-cyan-400">CTF</span>Y
-            </Link>
-            <h1 className="text-2xl font-bold text-white mt-4">Accès Admin</h1>
-            <p className="text-gray-300 mt-2">Entrez votre token d'administration</p>
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <div className="w-12 h-12 ynov-gradient-cyber rounded-lg flex items-center justify-center">
+                <span className="text-ynov-primary font-bold text-2xl">Y</span>
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold ynov-text-primary">Accès Admin</h1>
+                <p className="ynov-text-secondary mt-2">Entrez votre token d'administration</p>
+              </div>
+            </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8">
+          <div className="ynov-card p-8">
             <form onSubmit={handleTokenSubmit} className="space-y-6">
               <div>
-                <label htmlFor="token" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="token" className="block text-sm font-medium ynov-text-secondary mb-2">
                   Token Admin
                 </label>
                 <input
@@ -517,7 +545,7 @@ export default function AdminPage() {
                   id="token"
                   value={adminToken}
                   onChange={(e) => setAdminToken(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  className="ynov-input w-full"
                   placeholder="Entrez votre token admin"
                   required
                 />
@@ -525,14 +553,14 @@ export default function AdminPage() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:from-cyan-600 hover:to-purple-600 transition-all transform hover:scale-105"
+                className="w-full ynov-btn-primary py-3"
               >
                 Accéder au panel admin
               </button>
             </form>
 
             <div className="mt-6 text-center">
-              <Link href="/" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+              <Link href="/" className="ynov-text-cyber hover:ynov-text-accent transition-colors">
                 ← Retour à l'accueil
               </Link>
             </div>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import FlagSubmissionModal from '@/components/FlagSubmissionModal';
 import YnovHeader from '@/components/YnovHeader';
 
-const categories = ['Tous', 'Web', 'Crypto', 'Reverse', 'Forensics', 'Pwn', 'Misc', 'Osint', 'Stegano', 'Other'];
+const categories = ['Tous', 'Web', 'Crypto', 'Reverse', 'Forensics', 'Pwn', 'Misc', 'Osint', 'Stegano', 'Lockpicking', 'Other'];
 const difficulties = ['Toutes', 'Facile', 'Moyen', 'Difficile'];
 
 interface Challenge {
@@ -241,78 +241,87 @@ export default function ChallengesPage() {
 
           return (
             <div className="space-y-8">
-              {categoriesWithChallenges.map((category) => (
-                <div key={category} className="space-y-4">
-                  {/* Category Header */}
-                  <div className="flex items-center space-x-4">
-                    <h2 className="text-2xl font-bold ynov-text-primary">{category}</h2>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(category)}`}>
-                      {challengesByCategory[category].length} challenge{challengesByCategory[category].length > 1 ? 's' : ''}
-                    </span>
-                  </div>
+              {categoriesWithChallenges.map((category, index) => (
+                <div key={category}>
+                  {/* Ligne de séparation discrète entre les catégories */}
+                  {index > 0 && (
+                    <div className="mb-8">
+                      <div className="h-px bg-white/10"></div>
+                    </div>
+                  )} 
+                  
+                  <div className="space-y-4">
+                    {/* Category Header */}
+                    <div className="flex items-center space-x-4">
+                      <h2 className="text-2xl font-bold ynov-text-primary">{category}</h2>
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(category)}`}>
+                        {challengesByCategory[category].length} challenge{challengesByCategory[category].length > 1 ? 's' : ''}
+                      </span>
+                    </div>
 
-                  {/* Challenges Grid for this category */}
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {challengesByCategory[category].map((challenge) => (
-                      <div
-                        key={challenge.id}
-                        className="ynov-card p-6 cursor-pointer group"
-                      >
-                        <div className="flex items-start justify-between mb-4">
-                          <h3 className="text-xl font-bold ynov-text-primary group-hover:ynov-text-cyber transition-colors">
-                            {challenge.title}
-                          </h3>
-                          <div className="flex items-center space-x-2">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(challenge.difficulty)}`}>
-                              {challenge.difficulty}
+                    {/* Challenges Grid for this category */}
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {challengesByCategory[category].map((challenge) => (
+                        <div
+                          key={challenge.id}
+                          className="ynov-card p-6 cursor-pointer group"
+                        >
+                          <div className="flex items-start justify-between mb-4">
+                            <h3 className="text-xl font-bold ynov-text-primary group-hover:ynov-text-cyber transition-colors">
+                              {challenge.title}
+                            </h3>
+                            <div className="flex items-center space-x-2">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(challenge.difficulty)}`}>
+                                {challenge.difficulty}
+                              </span>
+                            </div>
+                          </div>
+
+                          <p className="ynov-text-secondary mb-4 text-sm">
+                            {challenge.description}
+                          </p>
+
+                          <div className="flex items-center justify-between mb-4">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(challenge.category)}`}>
+                              {challenge.category}
+                            </span>
+                            <span className="ynov-text-cyber font-bold">
+                              {challenge.points} pts
                             </span>
                           </div>
-                        </div>
 
-                        <p className="ynov-text-secondary mb-4 text-sm">
-                          {challenge.description}
-                        </p>
+                          {challenge.fileUrl && (
+                            <div className="mb-4">
+                              <a
+                                href={challenge.fileUrl}
+                                className="ynov-text-cyber hover:ynov-text-accent text-sm flex items-center"
+                                download
+                              >
+                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Télécharger le fichier
+                              </a>
+                            </div>
+                          )}
 
-                        <div className="flex items-center justify-between mb-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(challenge.category)}`}>
-                            {challenge.category}
-                          </span>
-                          <span className="ynov-text-cyber font-bold">
-                            {challenge.points} pts
-                          </span>
-                        </div>
-
-                        {challenge.fileUrl && (
-                          <div className="mb-4">
-                            <a
-                              href={challenge.fileUrl}
-                              className="ynov-text-cyber hover:ynov-text-accent text-sm flex items-center"
-                              download
+                          <div className="flex space-x-2">
+                            <button 
+                              onClick={() => setSelectedChallenge(challenge)}
+                              className="flex-1 ynov-btn-primary text-sm py-2 px-4"
                             >
-                              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                              Télécharger le fichier
-                            </a>
+                              Voir le détail
+                            </button>
+                            <button 
+                              onClick={() => setSelectedChallenge(challenge)}
+                              className="ynov-btn-secondary text-sm py-2 px-4"
+                            >
+                              Soumettre
+                            </button>
                           </div>
-                        )}
-
-                        <div className="flex space-x-2">
-                          <button 
-                            onClick={() => setSelectedChallenge(challenge)}
-                            className="flex-1 ynov-btn-primary text-sm py-2 px-4"
-                          >
-                            Voir le détail
-                          </button>
-                          <button 
-                            onClick={() => setSelectedChallenge(challenge)}
-                            className="ynov-btn-secondary text-sm py-2 px-4"
-                          >
-                            Soumettre
-                          </button>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               ))}

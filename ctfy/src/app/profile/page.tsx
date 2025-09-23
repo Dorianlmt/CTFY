@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import YnovHeader from '@/components/YnovHeader';
 
 interface Submission {
   id: string;
@@ -139,8 +140,8 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400"></div>
+      <div className="min-h-screen ynov-bg-primary flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ynov-cyber"></div>
       </div>
     );
   }
@@ -150,44 +151,36 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6">
-        <Link href="/" className="text-2xl font-bold text-white">
-          <span className="text-cyan-400">CTF</span>Y
-        </Link>
-        <div className="flex items-center space-x-4">
-          <Link href="/challenges" className="text-white hover:text-cyan-400 transition-colors">
-            Challenges
-          </Link>
-          <Link href="/leaderboard" className="text-white hover:text-cyan-400 transition-colors">
-            Classement
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 text-red-400 hover:text-red-300 transition-colors"
-          >
-            Déconnexion
-          </button>
-        </div>
-      </nav>
+    <div className="min-h-screen ynov-bg-primary">
+      <YnovHeader
+        isAdmin={user?.isAdmin || false}
+        user={user}
+        onLogout={handleLogout}
+      />
 
       <main className="container mx-auto px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Mon Profil</h1>
-          <p className="text-gray-300">Gérez votre compte et vos soumissions</p>
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-10 h-10 ynov-gradient-cyber rounded-lg flex items-center justify-center">
+              <span className="text-ynov-primary font-bold text-xl">Y</span>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold ynov-text-primary">Mon Profil</h1>
+              <p className="ynov-text-secondary">Gérez votre compte et vos soumissions</p>
+            </div>
+          </div>
         </div>
 
         {/* User Info */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">Informations personnelles</h2>
+        <div className="ynov-card p-6 mb-8">
+          <h2 className="text-2xl font-bold ynov-text-primary mb-4">Informations personnelles</h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <p className="text-gray-300">Nom : <span className="text-white font-semibold">{user.name}</span></p>
-              <p className="text-gray-300">Email : <span className="text-white font-semibold">{user.email}</span></p>
+              <p className="ynov-text-secondary">Nom : <span className="ynov-text-primary font-semibold">{user.name}</span></p>
+              <p className="ynov-text-secondary">Email : <span className="ynov-text-primary font-semibold">{user.email}</span></p>
             </div>
             <div>
-              <p className="text-gray-300">Statut : <span className="text-cyan-400 font-semibold">Connecté</span></p>
+              <p className="ynov-text-secondary">Statut : <span className="ynov-text-cyber font-semibold">Connecté</span></p>
               {user.isAdmin && (
                 <p className="text-yellow-400 font-semibold">Administrateur</p>
               )}
@@ -196,35 +189,35 @@ export default function ProfilePage() {
         </div>
 
         {/* Team Management */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">Gestion d'équipe</h2>
+        <div className="ynov-card p-6 mb-8">
+          <h2 className="text-2xl font-bold ynov-text-primary mb-4">Gestion d'équipe</h2>
           
           {team ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white font-semibold text-lg">{team.name}</p>
-                  <p className="text-gray-300">Code d'invitation : <code className="bg-white/10 px-2 py-1 rounded text-cyan-400 font-mono">{team.joinCode}</code></p>
-                  <p className="text-gray-300">Points : <span className="text-cyan-400 font-bold">{team.points}</span></p>
+                  <p className="ynov-text-primary font-semibold text-lg">{team.name}</p>
+                  <p className="ynov-text-secondary">Code d'invitation : <code className="bg-white/10 px-2 py-1 rounded ynov-text-cyber font-mono">{team.joinCode}</code></p>
+                  <p className="ynov-text-secondary">Points : <span className="ynov-text-cyber font-bold">{team.points}</span></p>
                 </div>
                 <div className="text-right">
-                  <p className="text-gray-300">{team.membersCount} membre(s)</p>
+                  <p className="ynov-text-secondary">{team.membersCount} membre(s)</p>
                 </div>
               </div>
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-gray-300">Vous n'êtes dans aucune équipe</p>
+              <p className="ynov-text-secondary">Vous n'êtes dans aucune équipe</p>
               <div className="flex space-x-4">
                 <button
                   onClick={() => setShowTeamForm(true)}
-                  className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-cyan-600 hover:to-purple-600 transition-all"
+                  className="ynov-btn-primary px-6 py-3"
                 >
                   Créer une équipe
                 </button>
                 <button
                   onClick={() => setShowJoinForm(true)}
-                  className="px-6 py-3 border border-cyan-400 text-cyan-400 rounded-lg font-semibold hover:bg-cyan-400 hover:text-white transition-all"
+                  className="ynov-btn-secondary px-6 py-3"
                 >
                   Rejoindre une équipe
                 </button>
@@ -234,21 +227,21 @@ export default function ProfilePage() {
         </div>
 
         {/* Submissions */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-          <h2 className="text-2xl font-bold text-white mb-4">Mes soumissions</h2>
+        <div className="ynov-card p-6">
+          <h2 className="text-2xl font-bold ynov-text-primary mb-4">Mes soumissions</h2>
           
           {submissions.length === 0 ? (
-            <p className="text-gray-300">Aucune soumission pour le moment</p>
+            <p className="ynov-text-secondary">Aucune soumission pour le moment</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-white/5">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Challenge</th>
-                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Flag</th>
-                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Statut</th>
-                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Points</th>
-                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Date</th>
+                    <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Challenge</th>
+                    <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Flag</th>
+                    <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Statut</th>
+                    <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Points</th>
+                    <th className="px-6 py-4 text-left text-sm font-medium ynov-text-secondary">Date</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
@@ -256,12 +249,12 @@ export default function ProfilePage() {
                     <tr key={submission.id} className="hover:bg-white/5 transition-colors">
                       <td className="px-6 py-4">
                         <div>
-                          <div className="text-white font-semibold">{submission.challenge.title}</div>
-                          <div className="text-gray-400 text-sm">{submission.challenge.category} - {submission.challenge.difficulty}</div>
+                          <div className="ynov-text-primary font-semibold">{submission.challenge.title}</div>
+                          <div className="ynov-text-muted text-sm">{submission.challenge.category} - {submission.challenge.difficulty}</div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <code className="bg-white/10 px-2 py-1 rounded text-cyan-400 font-mono text-sm">
+                        <code className="bg-white/10 px-2 py-1 rounded ynov-text-cyber font-mono text-sm">
                           {submission.flag}
                         </code>
                       </td>
@@ -275,11 +268,11 @@ export default function ProfilePage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-cyan-400 font-bold">
+                        <span className="ynov-text-cyber font-bold">
                           {submission.isCorrect ? submission.challenge.points : 0}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-gray-300 text-sm">
+                      <td className="px-6 py-4 ynov-text-secondary text-sm">
                         {new Date(submission.submittedAt).toLocaleString('fr-FR')}
                       </td>
                     </tr>
@@ -293,25 +286,25 @@ export default function ProfilePage() {
         {/* Create Team Modal */}
         {showTeamForm && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-slate-800 rounded-xl p-8 w-full max-w-md">
-              <h3 className="text-2xl font-bold text-white mb-6">Créer une équipe</h3>
+            <div className="ynov-card p-8 w-full max-w-md">
+              <h3 className="text-2xl font-bold ynov-text-primary mb-6">Créer une équipe</h3>
               <form onSubmit={handleCreateTeam} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Nom de l'équipe</label>
+                  <label className="block text-sm font-medium ynov-text-secondary mb-2">Nom de l'équipe</label>
                   <input
                     type="text"
                     value={teamFormData.name}
                     onChange={(e) => setTeamFormData({ ...teamFormData, name: e.target.value })}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="ynov-input w-full"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Description (optionnel)</label>
+                  <label className="block text-sm font-medium ynov-text-secondary mb-2">Description (optionnel)</label>
                   <textarea
                     value={teamFormData.description}
                     onChange={(e) => setTeamFormData({ ...teamFormData, description: e.target.value })}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="ynov-input w-full"
                     rows={3}
                   />
                 </div>
@@ -319,13 +312,13 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={() => setShowTeamForm(false)}
-                    className="px-6 py-3 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-500/20 transition-all"
+                    className="px-6 py-3 border border-gray-500 ynov-text-secondary rounded-lg hover:bg-gray-500/20 transition-all"
                   >
                     Annuler
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 text-white rounded-lg font-semibold hover:from-cyan-600 hover:to-purple-600 transition-all"
+                    className="ynov-btn-primary px-6 py-3"
                   >
                     Créer
                   </button>
@@ -338,16 +331,16 @@ export default function ProfilePage() {
         {/* Join Team Modal */}
         {showJoinForm && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-slate-800 rounded-xl p-8 w-full max-w-md">
-              <h3 className="text-2xl font-bold text-white mb-6">Rejoindre une équipe</h3>
+            <div className="ynov-card p-8 w-full max-w-md">
+              <h3 className="text-2xl font-bold ynov-text-primary mb-6">Rejoindre une équipe</h3>
               <form onSubmit={handleJoinTeam} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Code d'invitation</label>
+                  <label className="block text-sm font-medium ynov-text-secondary mb-2">Code d'invitation</label>
                   <input
                     type="text"
                     value={joinCode}
                     onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="ynov-input w-full"
                     placeholder="ABC123"
                     required
                   />
@@ -356,13 +349,13 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={() => setShowJoinForm(false)}
-                    className="px-6 py-3 border border-gray-500 text-gray-300 rounded-lg hover:bg-gray-500/20 transition-all"
+                    className="px-6 py-3 border border-gray-500 ynov-text-secondary rounded-lg hover:bg-gray-500/20 transition-all"
                   >
                     Annuler
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 text-white rounded-lg font-semibold hover:from-cyan-600 hover:to-purple-600 transition-all"
+                    className="ynov-btn-primary px-6 py-3"
                   >
                     Rejoindre
                   </button>

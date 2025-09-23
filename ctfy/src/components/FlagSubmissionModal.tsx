@@ -130,12 +130,12 @@ export default function FlagSubmissionModal({ challenge, onClose, onSubmit }: Fl
               value={flag}
               onChange={(e) => setFlag(e.target.value)}
               className="ynov-input w-full"
-              placeholder="CTF{...}"
+              placeholder="FLAG{...}"
               disabled={isLoading}
               required
             />
             <p className="ynov-text-muted text-sm mt-2">
-              Format attendu : CTF... ou le flag exact
+              Format attendu : FLAG... ou le flag exact
             </p>
           </div>
 
